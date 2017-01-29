@@ -1,5 +1,13 @@
 # RxJS Boiler
 
+Forked from: https://github.com/bradtraversy/rxjs_boiler
+
+Following along with: RxJS Observables Crash Course - https://www.youtube.com/watch?v=ei7FsoXKPl0
+
+Each commit is timestamped vs the video.
+
+----
+
 Boilerplate for building RxJS applications in a Webpack environment
 
 ### Version
