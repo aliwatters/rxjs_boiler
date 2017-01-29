@@ -1,23 +1,38 @@
 import $ from 'jquery';
 import Rx from 'rxjs/Rx';
 
-Rx.Observable
-  .of('hello')
-  .merge(Rx.Observable.of('everyone'))
-  .subscribe(x => console.log(x));
+// // ugly
+// Rx.Observable.of("Hello").subscribe(
+//   // embedded double subscribe
+//   v => Rx.Observable.of(v + " Everyone").subscribe(x => console.log(x))
+// );
+//
+// // pretty
+// Rx.Observable
+//   .of("Hello")
+//   .mergeMap(v => Rx.Observable.of(v + " Everyone"))
+//   .subscribe(x => console.log(x));
 
-Rx.Observable
-  .interval(2000)
-  .merge(Rx.Observable.interval(500))
-  .take(25)
-  .subscribe(x => console.log(x));
+function getUser(username) {
+  return $
+    .ajax({
+      url: 'https://api.github.com/users/' + username,
+      dataType: 'jsonp'
+    })
+    .promise();
+}
 
-const source1$ = Rx.Observable.interval(2000).map(v => 'Merge 1 ' + v);
-const source2$ = Rx.Observable.interval(500).map(v => 'Merge 2 ' + v);
+const inputSource$ = Rx.Observable
+  .fromEvent($('#input'), 'keyup')
+  .map(e => e.target.value)
+  .switchMap(v => Rx.Observable.fromPromise(getUser(v)));
 
-Rx.Observable.merge(source1$, source2$).take(25).subscribe(x => console.log(x));
-
-const src1$ = Rx.Observable.range(0, 5).map(v => 'Source 1 ' + v);
-const src2$ = Rx.Observable.range(6, 5).map(v => 'Source 2 ' + v);
-
-Rx.Observable.concat(src1$, src2$).subscribe(x => console.log(x));
+inputSource$.subscribe(
+  res => {
+    $('#username').html(res.data.login);
+    $('#name').html(res.data.name);
+    $('#url').html(res.data.url);
+  },
+  err => console.log(err),
+  complete => console.log('complete')
+);
