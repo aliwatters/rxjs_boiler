@@ -1,36 +1,26 @@
 import $ from 'jquery';
 import Rx from 'rxjs/Rx';
 
-const myPromise = new Promise((resolve, reject) => {
-  console.log('creating promise');
-  setTimeout(() => resolve('Hello from promise'), 3000);
-});
+const source$ = Rx.Observable.interval(200).take(5);
 
-// myPromise.then(x => console.log(x));
-const source$ = Rx.Observable.fromPromise(myPromise);
+source$.subscribe(
+  x => console.log(x),
+  err => console.log(err),
+  complete => console.log('complete')
+);
 
-source$.subscribe(x => console.log(x));
+const timer$ = Rx.Observable.interval(1000, 200).take(5);
 
-function getUser(username) {
-  return $
-    .ajax({
-      url: 'https://api.github.com/users/' + username,
-      dataType: 'jsonp'
-    })
-    .promise();
-}
+timer$.subscribe(
+  x => console.log(x),
+  err => console.log(err),
+  complete => console.log('complete')
+);
 
-const inputSource$ = Rx.Observable.fromEvent($('#input'), 'keyup');
+const range$ = Rx.Observable.range(10, 10);
 
-inputSource$.subscribe(e => {
-  console.log(e.target.value);
-  Rx.Observable.fromPromise(getUser(e.target.value)).subscribe(
-    res => {
-      $('#username').html(res.data.login);
-      $('#name').html(res.data.name);
-      $('#url').html(res.data.url);
-    },
-    err => console.log(err),
-    complete => console.log('complete')
-  );
-});
+range$.subscribe(
+  x => console.log(x),
+  err => console.log(err),
+  complete => console.log('complete')
+);
