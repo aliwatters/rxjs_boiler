@@ -1,52 +1,54 @@
 import $ from 'jquery';
 import Rx from 'rxjs/Rx';
 
-const btn = $('#btn');
+const numbers = [ 33, 44, 55, 66, 77 ];
 
-const btnStream$ = Rx.Observable.fromEvent(btn, 'click');
+const numbers$ = Rx.Observable.from(numbers);
 
-btnStream$.subscribe(
-  function(e) {
-    console.log(e.target.innerHTML);
+numbers$.subscribe(
+  v => {
+    console.log(v);
   },
-  function(err) {
-    console.log('error', err);
+  err => {
+    console.log('Error', err);
   },
-  function() {
+  complete => {
     console.log('Completed');
   }
 );
 
-const input = $('#input');
-const output = $('#output');
+const posts = [
+  { title: 'post one', body: 'this is the body' },
+  { title: 'post two', body: 'this is the body' },
+  { title: 'post three', body: 'this is the body' },
+  { title: 'post four', body: 'this is the body' }
+];
+const posts$ = Rx.Observable.from(posts);
 
-const inputStream$ = Rx.Observable.fromEvent(input, 'keyup');
+posts$.subscribe(
+  v => {
+    console.log(v);
+    $('#posts').append('<li><b>' + v.title + '</b> ' + v.body);
+  },
+  err => console.log(err),
+  complete => console.log('COMPLETED')
+);
 
-inputStream$.subscribe(
-  function(e) {
-    console.log(e.target.value);
-    output.html(e.target.value);
-  },
-  function(err) {
-    console.log('error', err);
-  },
-  function() {
-    console.log('Completed');
-  }
+const set = new Set(['Hello', 44, {title:'my title'}]);
+const set$ = Rx.Observable.from(set);
+
+set$.subscribe(
+  v => console.log(v),
+  err => console.log(err),
+  complete => console.log('COMPLETED')
 );
 
 
-const moveStream$ = Rx.Observable.fromEvent(document, 'mousemove');
+const map = new Map([[1,2], [3,4], [5,6]]);
+const map$ = Rx.Observable.from(map);
 
-moveStream$.subscribe(
-  function(e) {
-    console.log(e.target.value);
-    output.html('X:'+e.clientX+ ' Y: '+ e.clientY);
-  },
-  function(err) {
-    console.log('error', err);
-  },
-  function() {
-    console.log('Completed');
-  }
+map$.subscribe(
+  v => console.log(v),
+  err => console.log(err),
+  complete => console.log('COMPLETED')
 );
